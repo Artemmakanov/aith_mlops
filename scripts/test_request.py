@@ -1,7 +1,8 @@
 import requests
 
 # URL нашего эндпоинта (формируется из базового URL + /serve/ + имя_эндпоинта)
-url = "http://localhost:8008/serve/sentiment"
+# Порт 8008 занят ClearML API Server — inference слушает на 9008
+url = "http://localhost:9008/serve/sentiment"
 
 # Подготовим примеры текстов (положительный и отрицательный классы)
 # ClearML Serving для sklearn ожидает данные в ключе "x" в виде списка
