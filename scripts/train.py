@@ -16,7 +16,7 @@ parameters = {
     'max_features': 1000,
     'C': 1.0,
     'test_size': 0.2,
-    'dataset_id': '57833e8be6444c1aa03f3a103b060c10' # <--- ВАЖНО!
+    'dataset_id': 'c2ab0b80726043049b68f80ac79c2086' 
 }
 task.connect(parameters)
 
