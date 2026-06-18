@@ -1,6 +1,5 @@
 import pandas as pd
 from clearml import Dataset
-from sklearn.model_selection import train_test_split
 
 # --- 1. Скачиваем реально существующий датасет ---
 print("Скачиваем датасет Twitter Sentiment Analysis...")
@@ -9,10 +8,14 @@ url = "https://raw.githubusercontent.com/dD2405/Twitter_Sentiment_Analysis/maste
 # Читаем датасет (в оригинале он содержит ~32к строк)
 df = pd.read_csv(url)
 
-# Берем стратифицированную выборку 500 строк, сохраняя пропорции классов
-small_df, _ = train_test_split(
-    df, train_size=1000, stratify=df['label'], random_state=42
-)
+# Берем сбалансированную выборку 1000 строк (500 на класс, соотношение 1:1)
+n_per_class = 500
+small_df = pd.concat(
+    [
+        group.sample(n=n_per_class, random_state=42)
+        for _, group in df.groupby('label')
+    ]
+).sample(frac=1, random_state=42).reset_index(drop=True)
 
 # Сохраняем локально в CSV
 csv_filename = "real_sentiment_mini.csv"

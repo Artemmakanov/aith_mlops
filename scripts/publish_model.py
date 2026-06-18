@@ -4,7 +4,7 @@ from clearml import Task, OutputModel, Model
 task = Task.init(project_name='students_project', task_name='model_registry_publisher')
 
 # 2. Укажите ID вашего ЛУЧШЕГО эксперимента из Этапа 2
-BEST_TASK_ID = "6d929f4bcde2436aafdb3d74a1d4568e"
+BEST_TASK_ID = "17bd3c51bdbc43e0b7a7e1604894ff4b"
 best_task = Task.get_task(task_id=BEST_TASK_ID)
 
 # Скачиваем файл модели (.pkl), который мы ранее сохранили как 'model_artifact'

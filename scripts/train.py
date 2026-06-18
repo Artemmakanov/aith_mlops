@@ -16,7 +16,7 @@ parameters = {
     'max_features': 1000,
     'C': 1.0,
     'test_size': 0.2,
-    'dataset_id': 'c2ab0b80726043049b68f80ac79c2086' 
+    'dataset_id': 'e04e451af6164b8bab67409478832781' 
 }
 task.connect(parameters)
 
@@ -33,7 +33,13 @@ df = pd.read_csv(f"{dataset_path}/real_sentiment_mini.csv")
 X = df['tweet'].fillna('')
 y = df['label']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=parameters['test_size'], random_state=42)
+label_counts = y.value_counts().to_dict()
+print(f"Распределение классов в датасете: {label_counts}")
+task.get_logger().report_text(f"Label distribution: {label_counts}")
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=parameters['test_size'], random_state=42, stratify=y
+)
 
 # Векторизация текста
 vectorizer = TfidfVectorizer(max_features=parameters['max_features'])
@@ -42,13 +48,13 @@ X_test_vec = vectorizer.transform(X_test)
 
 # Обучение модели
 print("Обучаем модель...")
-model = LogisticRegression(C=parameters['C'], random_state=42)
+model = LogisticRegression(C=parameters['C'], random_state=42, class_weight='balanced')
 model.fit(X_train_vec, y_train)
 preds = model.predict(X_test_vec)
 
 # --- 5. Логирование метрик (Accuracy, F1) ---
 acc = accuracy_score(y_test, preds)
-f1 = f1_score(y_test, preds, average='weighted')
+f1 = f1_score(y_test, preds, average='macro')
 
 task.get_logger().report_scalar(title='Metrics', series='Accuracy', value=acc, iteration=1)
 task.get_logger().report_scalar(title='Metrics', series='F1 Score', value=f1, iteration=1)
